@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <!-- Head -->
+    <head><meta name="generator" content="Hexo 3.9.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="dontcallmilanac">
+    <meta name="description" itemprop="description" content="替换redhat的yum安装源为免费源">
+    <meta name="keywords" content="null,redhat,yum">
+
+    <!-- Page Title -->
+    
+        <title>替换redhat的yum安装源 | dontcallmilanac&#39;s blog</title>
+    
+    <link rel="icon" href="/img/avatar-default.png">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="/js/script.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        .deactiveColor{
+            color: #37474f;
+        }
+        .activeColor{
+            color: #006064;
+        }
+        a:hover{
+            color: #006064;
+        }
+        .header-btn{
+            color: #37474f;
+        }
+        
+        .post-content img{
+            margin: 50px auto;
+        }
+        
+    </style>
+</head>
+    <body>
+        <div class="container">
+
+            <!-- Top Anchor -->
+            <div id="top"></div>
+
+            <!-- Header -->
+            <header class="header-wrapper">
+    <div class="header-title-wrapper">
+        <!-- Page Title -->
+        <p class="header-title">
+             
+                
+                    替换redhat的yum安装源
+                
+            
+        </p>  
+    </div>    
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+    
+    <div class="header-detail">
+        <!-- Header Button -->
+        <div class="header-btn-wrapper">
+            
+                <span>
+                    <a class="home-btn header-btn" href="/" title="homepage"><i class="fa fa-home"></i></a>
+                </span>
+
+                
+                    <span>
+                        <a class="catalog-btn header-btn"><i class="fa fa-list-ul"></i></a>
+                    </span>
+                
+            
+        </div>
+    </div>
+</header>
+
+            <!-- Main -->
+            <main>
+                <article class="post-wrapper">
+    
+
+    
+        <!-- Article Catalog -->
+        <div class="catalog-dropdown col-xs-12 col-sm-12">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#删除redhat原有的yum源"><span class="toc-number">1.</span> <span class="toc-text">删除redhat原有的yum源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#下载新的yum安装包"><span class="toc-number">2.</span> <span class="toc-text">下载新的yum安装包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装yum软件包"><span class="toc-number">3.</span> <span class="toc-text">安装yum软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更改yum源"><span class="toc-number">4.</span> <span class="toc-text">更改yum源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#清理yum缓存"><span class="toc-number">5.</span> <span class="toc-text">清理yum缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol>
+        </div>
+    
+
+    
+        <!--For now, Lightbox Only Show in Post Layout -->
+        
+
+        
+        
+    
+
+    
+
+    <!-- Article Content -->
+    <div class="post-content">
+        <h2 id="删除redhat原有的yum源"><a href="#删除redhat原有的yum源" class="headerlink" title="删除redhat原有的yum源"></a>删除redhat原有的yum源</h2><pre><code># rpm -aq | grep yum|xargs rpm -e --nodeps</code></pre><h2 id="下载新的yum安装包"><a href="#下载新的yum安装包" class="headerlink" title="下载新的yum安装包"></a>下载新的yum安装包</h2><ul>
+<li>此处使用CentOS的yum源<pre><code># wget http://mirror.centos.org/centos/6.5/os/i386/Packages/python-iniparse-0.3.1-2.1.el6.noarch.rpm
+# wget http://mirror.centos.org/centos/6.5/os/i386/Packages/yum-metadata-parser-1.1.2-16.el6.i686.rpm
+# wget http://mirror.centos.org/centos/6.5/os/i386/Packages/yum-3.2.29-40.el6.centos.noarch.rpm
+# wget http://mirror.centos.org/centos/6.5/os/i386/Packages/yum-plugin-fastestmirror-1.1.30-14.el6.noarch.rpm</code></pre></li>
+</ul>
+<h2 id="安装yum软件包"><a href="#安装yum软件包" class="headerlink" title="安装yum软件包"></a>安装yum软件包</h2><pre><code># rpm -ivh  python-iniparse-0.3.1-2.1.el6.noarch.rpm
+# rpm -ivh  yum-metadata-parser-1.1.2-14.1.el6.i686.rpm
+# rpm -ivh  yum-3.2.27-14.el6.centos.noarch.rpm  yum-plugin-fastestmirror-1.1.26-11.el6.noarch.rpm</code></pre><ul>
+<li>注意:最后两个安装包相互依赖,要放在一起同时安装,否则安装失败.</li>
+</ul>
+<h2 id="更改yum源"><a href="#更改yum源" class="headerlink" title="更改yum源"></a>更改yum源</h2><ul>
+<li>使用网易的CentOS镜像源<pre><code># cd /etc/yum.repos.d/
+# wget  http://mirrors.163.com/.help/CentOS6-Base-163.repo
+# vi CentOS6-Base-163.repo</code></pre></li>
+<li>编辑文件,把<code>$releasever</code>全部替换为版本号“6”,<code>:%s/$releasever/6/g</code>.或者直接把以下内容拷贝到<code>CentOS6-Base-163.repo</code>文件中(已修改)<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#########################################################################</span></span><br><span class="line"><span class="comment"># CentOS-Base.repo</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># The mirror system uses the connecting IP address of the client and the</span></span><br><span class="line"><span class="comment"># update status of each mirror to pick mirrors that are updated to and</span></span><br><span class="line"><span class="comment"># geographically close to the client.  You should use this for CentOS updates</span></span><br><span class="line"><span class="comment"># unless you are manually picking other mirrors.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># If the mirrorlist= does not work for you, as a fall back you can try the</span></span><br><span class="line"><span class="comment"># remarked out baseurl= line instead.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name=CentOS-6 - Base - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/6/os/<span class="variable">$basearch</span>/</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=6&amp;arch=$basearch&amp;repo=os</span></span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line"><span class="comment">#released updates</span></span><br><span class="line">[updates]</span><br><span class="line">name=CentOS-6 - Updates - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/6/updates/<span class="variable">$basearch</span>/</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=6&amp;arch=$basearch&amp;repo=updates</span></span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line"><span class="comment">#additional packages that may be useful</span></span><br><span class="line">[extras]</span><br><span class="line">name=CentOS-6 - Extras - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/6/extras/<span class="variable">$basearch</span>/</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=6&amp;arch=$basearch&amp;repo=extras</span></span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line"><span class="comment">#additional packages that extend functionality of existing packages</span></span><br><span class="line">[centosplus]</span><br><span class="line">name=CentOS-6 - Plus - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/6/centosplus/<span class="variable">$basearch</span>/</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=6&amp;arch=$basearch&amp;repo=centosplus</span></span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line"><span class="comment">#contrib - packages by Centos Users</span></span><br><span class="line">[contrib]</span><br><span class="line">name=CentOS-6 - Contrib - 163.com</span><br><span class="line">baseurl=http://mirrors.163.com/centos/6/contrib/<span class="variable">$basearch</span>/</span><br><span class="line"><span class="comment">#mirrorlist=http://mirrorlist.centos.org/?release=6&amp;arch=$basearch&amp;repo=contrib</span></span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-6</span><br><span class="line"></span><br><span class="line"><span class="comment">#########################################################################</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="清理yum缓存"><a href="#清理yum缓存" class="headerlink" title="清理yum缓存"></a>清理yum缓存</h2><pre><code># yum clean all
+# yum makecache       //将服务器上的软件包信息缓存到本地,以提高搜索安装软件的速度
+# yum install vim*    //测试域名是否可用</code></pre><p>至此,Redhat6可以使用CentOS的yum源在线安装软件.</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li><a href="http://blog.itpub.net/23890223/viewspace-757724/" title="linux基础——在redhat6下配置yum源的使用" target="_blank" rel="noopener">linux基础——在redhat6下配置yum源的使用</a></li>
+</ul>
+  
+    </div> 
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+
+    <div class="post-info-wrapper">
+            
+                    <!-- Post Info -->
+                    <p class="post-date">2014-09-07</p>
+                    
+                    
+                        <p class="post-info-categories">
+                            <a class="post-category-link" href="/categories/linux/">linux</a>
+                        </p>
+                    
+
+                    
+            
+    </div>
+</article>
+
+
+    
+
+            </main>
+
+            <!-- 'To Top' Btn-->
+            
+                <div id="to-top">
+    <a href="#top" class="toTop">
+        <i class="fa fa-pagelines"></i>
+    </a>
+</div>
+            
+
+            <!-- Footer -->
+            
+                <footer class="footer-wrapper col-xs-12 col-sm-12">
+    <div class="footer-banner-wrapper">
+        <p class="footer-banner">Powered by <a href="https://hexo.io/" title="Hexo">Hexo</a></p>
+        <P class="footer-banner">Theme <a href="https://github.com/Lonezj/hexo-theme-wind" title="Wind">wind</a></P>
+    </div>
+</footer>
+            
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/google-prettify-monokai.css" type="text/css">
+        <script src="//cdn.bootcss.com/prettify/r298/prettify.min.js" type="text/javascript"></script>
+    </body>
+</html>

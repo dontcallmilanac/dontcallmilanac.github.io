@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+    <!-- Head -->
+    <head><meta name="generator" content="Hexo 3.9.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="dontcallmilanac">
+    <meta name="description" itemprop="description" content="添加自定义ipmi命令">
+    <meta name="keywords" content="null,ipmi,MDS,ast2400">
+
+    <!-- Page Title -->
+    
+        <title>开发ast2400自定义ipmi命令 | dontcallmilanac&#39;s blog</title>
+    
+    <link rel="icon" href="/img/avatar-default.png">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="/js/script.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        .deactiveColor{
+            color: #37474f;
+        }
+        .activeColor{
+            color: #006064;
+        }
+        a:hover{
+            color: #006064;
+        }
+        .header-btn{
+            color: #37474f;
+        }
+        
+        .post-content img{
+            margin: 50px auto;
+        }
+        
+    </style>
+</head>
+    <body>
+        <div class="container">
+
+            <!-- Top Anchor -->
+            <div id="top"></div>
+
+            <!-- Header -->
+            <header class="header-wrapper">
+    <div class="header-title-wrapper">
+        <!-- Page Title -->
+        <p class="header-title">
+             
+                
+                    开发ast2400自定义ipmi命令
+                
+            
+        </p>  
+    </div>    
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+    
+    <div class="header-detail">
+        <!-- Header Button -->
+        <div class="header-btn-wrapper">
+            
+                <span>
+                    <a class="home-btn header-btn" href="/" title="homepage"><i class="fa fa-home"></i></a>
+                </span>
+
+                
+                    <span>
+                        <a class="catalog-btn header-btn"><i class="fa fa-list-ul"></i></a>
+                    </span>
+                
+            
+        </div>
+    </div>
+</header>
+
+            <!-- Main -->
+            <main>
+                <article class="post-wrapper">
+    
+
+    
+        <!-- Article Catalog -->
+        <div class="catalog-dropdown col-xs-12 col-sm-12">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#定义自己的NetFn和CMD"><span class="toc-number">1.</span> <span class="toc-text">定义自己的NetFn和CMD</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将自定义的命令添加到网络功能表中"><span class="toc-number">2.</span> <span class="toc-text">将自定义的命令添加到网络功能表中</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现各个命令处理函数"><span class="toc-number">3.</span> <span class="toc-text">实现各个命令处理函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对makefile文件作相应的修改"><span class="toc-number">4.</span> <span class="toc-text">对makefile文件作相应的修改:</span></a></li></ol>
+        </div>
+    
+
+    
+        <!--For now, Lightbox Only Show in Post Layout -->
+        
+
+        
+        
+            <!-- Article Img Lightbox -->
+            <div class="gallery">
+    
+    
+    <div class="lightbox">
+        <!-- Close Button -->
+        <span class="close-gallery">&times;</span>
+        
+        <!-- Photo -->
+        <img class="gallery-photo">
+    </div>
+</div>
+        
+    
+
+    
+
+    <!-- Article Content -->
+    <div class="post-content">
+        <h2 id="定义自己的NetFn和CMD"><a href="#定义自己的NetFn和CMD" class="headerlink" title="定义自己的NetFn和CMD"></a>定义自己的<code>NetFn</code>和<code>CMD</code></h2><ul>
+<li>在<code>ipmipdk_dev</code>包中添加两个头文件<code>SDC_CmdsHndlr.h</code>和<code>PDK_Cmds.h</code>,一个文件定义<code>NetFn</code>、<code>CMD</code>的编码和命令处理的函数指针并声明各个函数,一个文件定义有关自定义命令需要的各种数据结构.例子如下:<br><img src="........%5Cimg%5C1.png" alt="SDC_CmdsHndlr.h" title="SDC_CmdsHndlr.h"><br>这个例子中定义的<code>NetFunction</code>为:<code>NETFN_SDC</code>,编码为<code>0x3A</code>,在这个<code>NetFn</code>下定义了4条OEM指令,编码分别为 <code>0xA0</code>, <code>0xA1</code>, <code>0xA2</code>, <code>0xA3</code>,这四条命令对应的处理函数为<code>SDCSetUplinkInfo</code>, <code>SDCGetUplinkInfo</code>, <code>SDCSetStorgeInfo</code>和<code>SDCGetStorgeInfo</code>.<br><img src="........%5Cimg%5C2.png" alt="PDK_Cmds.h" title="PDK_Cmds.h"><br>这个文件中定义了各个命令的请求数据结构和响应数据结构,如果命令没有请求数据,可以不定义请求数据结构,但是各个命令一定要定义响应的数据结构,至少应有一项:完成码<code>CompletionCode</code>.</li>
+</ul>
+<h2 id="将自定义的命令添加到网络功能表中"><a href="#将自定义的命令添加到网络功能表中" class="headerlink" title="将自定义的命令添加到网络功能表中"></a>将自定义的命令添加到网络功能表中</h2><ul>
+<li>在<code>libipmipdkcmds</code>包中的<code>cmdselect.c</code>中添加如下内容:<br><img src="........%5Cimg%5C3.png" alt="cmdselect.c" title="cmdselect.c"></li>
+<li>在<code>libipmipdkcmds</code>包中的<code>PDKCmds.c</code>中添加如下内容:<br><img src="........%5Cimg%5C4.png" alt="PDKCmds.c" title="PDKCmds.c"></li>
+</ul>
+<h2 id="实现各个命令处理函数"><a href="#实现各个命令处理函数" class="headerlink" title="实现各个命令处理函数"></a>实现各个命令处理函数</h2><ul>
+<li>在<code>libipmipdkcmds</code>包中添加一个文件,定义自己的命令处理函数.在各个函数体中实现自己设计的功能.<br><img src="........%5Cimg%5C5.png" alt="SDC_Cmds.c" title="SDC_Cmds.c"></li>
+</ul>
+<h2 id="对makefile文件作相应的修改"><a href="#对makefile文件作相应的修改" class="headerlink" title="对makefile文件作相应的修改:"></a>对<code>makefile</code>文件作相应的修改:</h2><p><img src="........%5Cimg%5C6.png" alt="makefile" title="makefile"></p>
+  
+    </div> 
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+
+    <div class="post-info-wrapper">
+            
+                    <!-- Post Info -->
+                    <p class="post-date">2014-12-18</p>
+                    
+                    
+                        <p class="post-info-categories">
+                            <a class="post-category-link" href="/categories/linux/">linux</a>
+                        </p>
+                    
+
+                    
+            
+    </div>
+</article>
+
+
+    
+
+            </main>
+
+            <!-- 'To Top' Btn-->
+            
+                <div id="to-top">
+    <a href="#top" class="toTop">
+        <i class="fa fa-pagelines"></i>
+    </a>
+</div>
+            
+
+            <!-- Footer -->
+            
+                <footer class="footer-wrapper col-xs-12 col-sm-12">
+    <div class="footer-banner-wrapper">
+        <p class="footer-banner">Powered by <a href="https://hexo.io/" title="Hexo">Hexo</a></p>
+        <P class="footer-banner">Theme <a href="https://github.com/Lonezj/hexo-theme-wind" title="Wind">wind</a></P>
+    </div>
+</footer>
+            
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/google-prettify-monokai.css" type="text/css">
+        <script src="//cdn.bootcss.com/prettify/r298/prettify.min.js" type="text/javascript"></script>
+    </body>
+</html>

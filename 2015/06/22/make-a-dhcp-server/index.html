@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+    <!-- Head -->
+    <head><meta name="generator" content="Hexo 3.9.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="dontcallmilanac">
+    <meta name="description" itemprop="description" content="在redhat上搭建dhcp服务器">
+    <meta name="keywords" content="null,redhat,dhcp">
+
+    <!-- Page Title -->
+    
+        <title>dhcp服务搭建 | dontcallmilanac&#39;s blog</title>
+    
+    <link rel="icon" href="/img/avatar-default.png">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="/js/script.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        .deactiveColor{
+            color: #37474f;
+        }
+        .activeColor{
+            color: #006064;
+        }
+        a:hover{
+            color: #006064;
+        }
+        .header-btn{
+            color: #37474f;
+        }
+        
+        .post-content img{
+            margin: 50px auto;
+        }
+        
+    </style>
+</head>
+    <body>
+        <div class="container">
+
+            <!-- Top Anchor -->
+            <div id="top"></div>
+
+            <!-- Header -->
+            <header class="header-wrapper">
+    <div class="header-title-wrapper">
+        <!-- Page Title -->
+        <p class="header-title">
+             
+                
+                    dhcp服务搭建
+                
+            
+        </p>  
+    </div>    
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+    
+    <div class="header-detail">
+        <!-- Header Button -->
+        <div class="header-btn-wrapper">
+            
+                <span>
+                    <a class="home-btn header-btn" href="/" title="homepage"><i class="fa fa-home"></i></a>
+                </span>
+
+                
+                    <span>
+                        <a class="catalog-btn header-btn"><i class="fa fa-list-ul"></i></a>
+                    </span>
+                
+            
+        </div>
+    </div>
+</header>
+
+            <!-- Main -->
+            <main>
+                <article class="post-wrapper">
+    
+
+    
+        <!-- Article Catalog -->
+        <div class="catalog-dropdown col-xs-12 col-sm-12">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#本实验的OS环境-CentOS-6-2"><span class="toc-number">1.</span> <span class="toc-text">本实验的OS环境-CentOS 6.2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装DHCP相关软件包"><span class="toc-number">2.</span> <span class="toc-text">安装DHCP相关软件包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置本机的IP地址"><span class="toc-number">3.</span> <span class="toc-text">配置本机的IP地址</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#修改DHCP配置文件"><span class="toc-number">4.</span> <span class="toc-text">修改DHCP配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#控制DHCP服务器"><span class="toc-number">5.</span> <span class="toc-text">控制DHCP服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在指定网络接口上启动DHCP服务器"><span class="toc-number">6.</span> <span class="toc-text">在指定网络接口上启动DHCP服务器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看DHCP客户机地址的租约信息"><span class="toc-number">7.</span> <span class="toc-text">查看DHCP客户机地址的租约信息</span></a></li></ol>
+        </div>
+    
+
+    
+        <!--For now, Lightbox Only Show in Post Layout -->
+        
+
+        
+        
+    
+
+    
+
+    <!-- Article Content -->
+    <div class="post-content">
+        <h2 id="本实验的OS环境-CentOS-6-2"><a href="#本实验的OS环境-CentOS-6-2" class="headerlink" title="本实验的OS环境-CentOS 6.2"></a>本实验的OS环境-CentOS 6.2</h2><p>CentOS是RHEL(Red Hat Enterprise Linux)源代码再编译的产物的免费版,继承了Red Hat Linux的稳定性,而且又提供免费更新,因此在IDC中装机量几乎是最大的一个Linux发行版.</p>
+<h2 id="安装DHCP相关软件包"><a href="#安装DHCP相关软件包" class="headerlink" title="安装DHCP相关软件包"></a>安装DHCP相关软件包</h2><pre><code>rpm –qa|grep dhcp     //查看是否安装了DHCP相应的软件包
+rpm –ivh dhcp-4.0     //安装DHCP相应的软件包（本地有相应的软件包）
+yum install dhcp      //在线安装DHCP软件包</code></pre><h2 id="配置本机的IP地址"><a href="#配置本机的IP地址" class="headerlink" title="配置本机的IP地址"></a>配置本机的IP地址</h2><p>修改<code>/etc/sysconfig/network-scripts/ifcfg-eth0</code>文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">DEVICE=eth0</span><br><span class="line">HWADDR=00:18:8B:8D:AB:49</span><br><span class="line">BOOTPROTO=dhcp</span><br><span class="line">IPADDR=192.168.1.10        //可任意指定</span><br><span class="line">GATEWAY=192.168.1.1</span><br><span class="line">BROADCAST=192.168.1.255</span><br><span class="line">NM_CONTROLLED=no</span><br><span class="line">ONBOOT=yes</span><br></pre></td></tr></table></figure>
+
+<h2 id="修改DHCP配置文件"><a href="#修改DHCP配置文件" class="headerlink" title="修改DHCP配置文件"></a>修改DHCP配置文件</h2><p>可以从<code>/usr/share/doc/dhcp-4.1.1/dhcpd.conf.sample</code>复制,也可以直接编辑<code>/etc/dhcp/dhcp.conf</code>(如果没有新建一个,注意CentOS 5中<code>dhcpd.conf</code>在<code>/etc</code>目录下).<br><code>dhcpd.conf</code>内容如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ddns-update-style none;                   //配置DHCP-DNS互动更新模式</span><br><span class="line">ignore client-updates;                    //忽略客户端更新</span><br><span class="line">subnet 192.168.1.0 netmask 255.255.255.0 &#123;         //设置子网声明，该子网要包含本机的IP地址</span><br><span class="line">  option routers 192.168.1.1;                      //默认网关</span><br><span class="line">  option subnet-mask 255.255.255.0;                //子网掩码</span><br><span class="line">  option nis-domain <span class="string">"domain.org"</span>;                  //NIS域名</span><br><span class="line">  option domain-name <span class="string">"it.com"</span>;                     //DNS域名</span><br><span class="line">  option domain-name-servers 10.0.100.166;         //DNS的IP地址</span><br><span class="line">  option time-offset -1800;                        //偏移时间</span><br><span class="line">  range dynamic-bootp 192.168.1.100 192.168.1.200; //动态的IP地址池，为DHCP客户机分配</span><br><span class="line">  default-lease-time 21600;                        //默认的地址租期</span><br><span class="line">  max-lease-time 43200;                            //最长的地址租期</span><br><span class="line">  host ns &#123;                                        //主机声明</span><br><span class="line">    next-server marvin.redhat.com;</span><br><span class="line">    hardware ethernet 00:18:8b:83:89:af;</span><br><span class="line">    fixed-address 192.168.1.50;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="控制DHCP服务器"><a href="#控制DHCP服务器" class="headerlink" title="控制DHCP服务器"></a>控制DHCP服务器</h2><pre><code>service dhcpd start          //启动DHCP服务
+service dhcpd stop           //关闭DHCP服务
+service dhcpd restart        //重启DHCP服务</code></pre><h2 id="在指定网络接口上启动DHCP服务器"><a href="#在指定网络接口上启动DHCP服务器" class="headerlink" title="在指定网络接口上启动DHCP服务器"></a>在指定网络接口上启动DHCP服务器</h2><p>修改<code>/etc/sysconfig/dhcpd</code>文件:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DHCPDAGRS=eth0   //在eth0网卡上启动DHCP</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看DHCP客户机地址的租约信息"><a href="#查看DHCP客户机地址的租约信息" class="headerlink" title="查看DHCP客户机地址的租约信息"></a>查看DHCP客户机地址的租约信息</h2><p><code>/var/lib/dhcpd/dhcpd.leases</code>文件中保存了客户机地址的租约信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># The format of this file is documented in the dhcpd.leases(5) manual page.</span></span><br><span class="line"><span class="comment"># This lease file was written by isc-dhcp-4.1.1-P1</span></span><br><span class="line">...</span><br><span class="line"><span class="string">"/var/lib/dhcpd/dhcpd.leases"</span> 3L, 128C</span><br></pre></td></tr></table></figure>
+
+  
+    </div> 
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+
+    <div class="post-info-wrapper">
+            
+                    <!-- Post Info -->
+                    <p class="post-date">2015-06-22</p>
+                    
+                    
+                        <p class="post-info-categories">
+                            <a class="post-category-link" href="/categories/linux/">linux</a>
+                        </p>
+                    
+
+                    
+            
+    </div>
+</article>
+
+
+    
+
+            </main>
+
+            <!-- 'To Top' Btn-->
+            
+                <div id="to-top">
+    <a href="#top" class="toTop">
+        <i class="fa fa-pagelines"></i>
+    </a>
+</div>
+            
+
+            <!-- Footer -->
+            
+                <footer class="footer-wrapper col-xs-12 col-sm-12">
+    <div class="footer-banner-wrapper">
+        <p class="footer-banner">Powered by <a href="https://hexo.io/" title="Hexo">Hexo</a></p>
+        <P class="footer-banner">Theme <a href="https://github.com/Lonezj/hexo-theme-wind" title="Wind">wind</a></P>
+    </div>
+</footer>
+            
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/google-prettify-monokai.css" type="text/css">
+        <script src="//cdn.bootcss.com/prettify/r298/prettify.min.js" type="text/javascript"></script>
+    </body>
+</html>

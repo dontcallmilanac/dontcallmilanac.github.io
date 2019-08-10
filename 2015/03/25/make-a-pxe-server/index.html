@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <!-- Head -->
+    <head><meta name="generator" content="Hexo 3.9.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="author" content="dontcallmilanac">
+    <meta name="description" itemprop="description" content="在redhat上搭建pxe启动环境">
+    <meta name="keywords" content="null,redhat,pxe">
+
+    <!-- Page Title -->
+    
+        <title>pxe启动环境搭建 | dontcallmilanac&#39;s blog</title>
+    
+    <link rel="icon" href="/img/avatar-default.png">
+    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="/js/script.js"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <style>
+        .deactiveColor{
+            color: #37474f;
+        }
+        .activeColor{
+            color: #006064;
+        }
+        a:hover{
+            color: #006064;
+        }
+        .header-btn{
+            color: #37474f;
+        }
+        
+        .post-content img{
+            margin: 50px auto;
+        }
+        
+    </style>
+</head>
+    <body>
+        <div class="container">
+
+            <!-- Top Anchor -->
+            <div id="top"></div>
+
+            <!-- Header -->
+            <header class="header-wrapper">
+    <div class="header-title-wrapper">
+        <!-- Page Title -->
+        <p class="header-title">
+             
+                
+                    pxe启动环境搭建
+                
+            
+        </p>  
+    </div>    
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+    
+    <div class="header-detail">
+        <!-- Header Button -->
+        <div class="header-btn-wrapper">
+            
+                <span>
+                    <a class="home-btn header-btn" href="/" title="homepage"><i class="fa fa-home"></i></a>
+                </span>
+
+                
+                    <span>
+                        <a class="catalog-btn header-btn"><i class="fa fa-list-ul"></i></a>
+                    </span>
+                
+            
+        </div>
+    </div>
+</header>
+
+            <!-- Main -->
+            <main>
+                <article class="post-wrapper">
+    
+
+    
+        <!-- Article Catalog -->
+        <div class="catalog-dropdown col-xs-12 col-sm-12">
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#PXE启动简介及原理"><span class="toc-number">1.</span> <span class="toc-text">PXE启动简介及原理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PXE简介"><span class="toc-number">1.1.</span> <span class="toc-text">PXE简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PXE原理"><span class="toc-number">1.2.</span> <span class="toc-text">PXE原理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验环境"><span class="toc-number">2.</span> <span class="toc-text">实验环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器"><span class="toc-number">2.1.</span> <span class="toc-text">服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端"><span class="toc-number">2.2.</span> <span class="toc-text">客户端</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装配置"><span class="toc-number">3.</span> <span class="toc-text">安装配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置DHCP服务器"><span class="toc-number">3.1.</span> <span class="toc-text">配置DHCP服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置tftp服务器"><span class="toc-number">3.2.</span> <span class="toc-text">配置tftp服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置nfs"><span class="toc-number">3.3.</span> <span class="toc-text">配置nfs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置PXE启动需要的文件-pxelinux-0"><span class="toc-number">3.4.</span> <span class="toc-text">配置PXE启动需要的文件:pxelinux.0</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#无人值守网络安装OS"><span class="toc-number">3.5.</span> <span class="toc-text">无人值守网络安装OS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常见问题"><span class="toc-number">3.6.</span> <span class="toc-text">常见问题</span></a></li></ol></li></ol>
+        </div>
+    
+
+    
+        <!--For now, Lightbox Only Show in Post Layout -->
+        
+
+        
+        
+            <!-- Article Img Lightbox -->
+            <div class="gallery">
+    
+    
+    <div class="lightbox">
+        <!-- Close Button -->
+        <span class="close-gallery">&times;</span>
+        
+        <!-- Photo -->
+        <img class="gallery-photo">
+    </div>
+</div>
+        
+    
+
+    
+
+    <!-- Article Content -->
+    <div class="post-content">
+        <h2 id="PXE启动简介及原理"><a href="#PXE启动简介及原理" class="headerlink" title="PXE启动简介及原理"></a>PXE启动简介及原理</h2><h3 id="PXE简介"><a href="#PXE简介" class="headerlink" title="PXE简介"></a>PXE简介</h3><ul>
+<li>预启动执行环境(PXE)指的是那些使得IBM兼容计算机(经常是运行Windows系统)不需要硬盘或是启动软盘就能启动的方法.这种方法早在计算机具有内部磁盘驱动器的时代之前就已经开始发展.</li>
+<li>PXE通常都是利用固件来启动计算机,这种固件是包含数据的只读内存(ROM)或是可编程只读内存(PROM)芯片,而不是包含数据的磁介质.这还产生了“PXE boot ROM”和“PXE boot PROM”(有时也写成“PXE bootprom”)这样的术语.</li>
+<li>从ROM或PROM启动免除了对机电设备(物理驱动器)的依赖,同时提高了可靠性及避免了驱动器读取错误.利用当今的内存技术,从ROM或PROM能够很快地启动.PXE也能够用于从网络启动计算机.</li>
+</ul>
+<h3 id="PXE原理"><a href="#PXE原理" class="headerlink" title="PXE原理"></a>PXE原理</h3><ul>
+<li>客户端电脑开机后,如果BIOS(Basic Input Output System的缩略语,直译过来就是“基本输入输出系统”.它的全称应该是ROM－BIOS,意思是只读存储器基本输入输出系统.其实,它是一组固化到计算机内主板上一个ROM芯片上的程序,它保存着计算机最重要的基本输入输出的程序、系统设置信息、开机上电自检程序和系统启动自举程序.)设置从网络启动,那么网卡中的PXE Boot ROM获得控制权之前先做自我测试,然后发送一个动态获得IP地址的广播包(请求FIND帧)到网络上.</li>
+<li>DHCP服务器在收到该广播包后,发送给客户端分配IP地址的DHCP回应包.内容包括客户端的IP地址,TFTP服务器的IP地址(DHCP服务器的066选项),预设通讯通道,及开机启动文件(DHCP服务器的067选项).该文件应该是一种由PXE启动规范规定的固定格式的可执行文件,类似于Windows XP正常启动时显示多重启动菜单之前的启动代码.</li>
+<li>客户端收到DHCP回应后,则会响应一个FRAME,以请求传送启动文件.之后服务端将和客户机再进行一系列应答,以决定启动的一些参数.</li>
+<li>客户端通过TFTP通讯协议从服务器下载开机启动文件.启动文件接收完成后,将控制权转交给启动块,完成PXE启动.客户端通过这个开机影像文件开机,这个开机文件可以只是单纯的开机程式也可以是操作系统.如果是用3Com Boot Image Editor编辑的启动文件,系统将根据PXE文件中的代码决定是显示选择菜单还是直接下载预设的镜像文件启动电脑.接下来的工作就由相应的镜像文件来完成了.</li>
+</ul>
+<h2 id="实验环境"><a href="#实验环境" class="headerlink" title="实验环境"></a>实验环境</h2><h3 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h3><p>CentOS 6.2, DHCP, tftp, nfs, IP 192.168.1.10</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>支持PXE启动的PC(Lenovo Thinkpad E430)</p>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><h3 id="配置DHCP服务器"><a href="#配置DHCP服务器" class="headerlink" title="配置DHCP服务器"></a>配置DHCP服务器</h3><p>见<a href="http://dontcallmilanac.github.io/2015/07/07/make-a-dhcp-server/" title="dhcp服务搭建">dhcp服务搭建</a>,在配置文件<code>/etc/dhcp/dhcpd.conf</code>中添加如下两行:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">filename “pxelinux.0”;         //客户端要读取的启动文件</span><br><span class="line">next-server 192.168.1.10;      //tftp服务器的IP地址</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置tftp服务器"><a href="#配置tftp服务器" class="headerlink" title="配置tftp服务器"></a>配置tftp服务器</h3><ul>
+<li>安装相应的软件包:<code>yum –y install tftp* xinetd</code></li>
+<li>修改tftp的配置文件<code>/etc/xinetd.d/tftp</code>,将<code>diabale = yes</code>修改为<code>disable = no</code>,此配置文件中指定了tftp的根目录为<code>/tftpboot</code>,如果没有此目录可手动创建一个,有的版本tftp根目录为<code>/var/lib/tftpboot</code></li>
+<li>启动xinetd服务:<code>service xinetd start</code></li>
+<li>也可以将其设为开机启动:<code>chkconfig xinetd on</code></li>
+</ul>
+<h3 id="配置nfs"><a href="#配置nfs" class="headerlink" title="配置nfs"></a>配置nfs</h3><ul>
+<li><p>NFS是Network File System的简写,即网络文件系统,是FreeBSD支持的文件系统中的一种.NFS允许一个系统在网络上与他人共享目录和文件.通过使用NFS,用户和程序可以像访问本地文件一样访问远端系统上的文件.</p>
+</li>
+<li><p>安装相应的软件包:<code>yum –y install nfs*</code></p>
+</li>
+<li><p>修改配置文件<code>/etc/exports</code>,添加如下内容:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/tftpboot *(ro,sync)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动nfs服务:</p>
+<pre><code>service rpcbind restart
+service nfslock restart
+service nfs restart</code></pre></li>
+</ul>
+<h3 id="配置PXE启动需要的文件-pxelinux-0"><a href="#配置PXE启动需要的文件-pxelinux-0" class="headerlink" title="配置PXE启动需要的文件:pxelinux.0"></a>配置PXE启动需要的文件:<code>pxelinux.0</code></h3><ul>
+<li>将安装光盘中的文件夹拷贝到<code>/tftpboot</code>下:<code>cp /usr/share/syslinux/pxelinux.0 /tftpboot</code></li>
+<li>在<code>/tftpboot</code>下新建<code>pxelinux.cfg</code>目录,将安装光盘中<code>isolinux</code>目录下的<code>isolinux.cfg</code>拷贝到新建目录下,并重命名为<code>default</code></li>
+<li>至此,服务器端配置完成,从网络启动客户端即可网络安装OS.</li>
+</ul>
+<h3 id="无人值守网络安装OS"><a href="#无人值守网络安装OS" class="headerlink" title="无人值守网络安装OS"></a>无人值守网络安装OS</h3><ul>
+<li>创建<code>ks.cfg</code>(KickStart配置文件)</li>
+<li>在<code>default</code>文件中添加如下内容:<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">append initrd=initrd.img ks=nfs:<span class="variable">$SERVERIP</span>:<span class="variable">$KS</span>.CFG_DIR ksdevice=eth0</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h3><ul>
+<li>出现<code>TFTP time out</code>问题:关闭服务端的防火墙:<code>service iptables stop</code></li>
+<li>出现<code>received error from TFTP server</code>:关闭服务端的syslinux:<code>setenforce 0</code></li>
+<li>出现<code>arp timeout</code>问题:确认服务器和客户端的网络可通,有的操作系统可能会因为虚拟网桥的原因能分配到IP地址但相互ping不通</li>
+<li>出现<code>unable to read package metadata.</code>:检查安装目录下的<code>repodata</code>文件夹下的文件是否有合适的后缀名,如果没有就手动添加它们的后缀名.</li>
+</ul>
+  
+    </div> 
+
+    
+        <!-- Division Line -->
+        <div class="division"></div> 
+    
+
+    <div class="post-info-wrapper">
+            
+                    <!-- Post Info -->
+                    <p class="post-date">2015-03-25</p>
+                    
+                    
+                        <p class="post-info-categories">
+                            <a class="post-category-link" href="/categories/linux/">linux</a>
+                        </p>
+                    
+
+                    
+            
+    </div>
+</article>
+
+
+    
+
+            </main>
+
+            <!-- 'To Top' Btn-->
+            
+                <div id="to-top">
+    <a href="#top" class="toTop">
+        <i class="fa fa-pagelines"></i>
+    </a>
+</div>
+            
+
+            <!-- Footer -->
+            
+                <footer class="footer-wrapper col-xs-12 col-sm-12">
+    <div class="footer-banner-wrapper">
+        <p class="footer-banner">Powered by <a href="https://hexo.io/" title="Hexo">Hexo</a></p>
+        <P class="footer-banner">Theme <a href="https://github.com/Lonezj/hexo-theme-wind" title="Wind">wind</a></P>
+    </div>
+</footer>
+            
+        </div>
+
+        <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.css">
+        <link rel="stylesheet" href="/css/google-prettify-monokai.css" type="text/css">
+        <script src="//cdn.bootcss.com/prettify/r298/prettify.min.js" type="text/javascript"></script>
+    </body>
+</html>
