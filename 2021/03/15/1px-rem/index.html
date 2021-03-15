@@ -5,20 +5,24 @@
   
 
   
-  <title>About | M &amp; D</title>
+  <title>由1px问题引发的rem方案 | M &amp; D</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="June &amp; July">
-<meta property="og:type" content="website">
-<meta property="og:title" content="About">
-<meta property="og:url" content="https://dontcallmilanac.github.io/about/index.html">
+  <meta name="description" content="面试官问，写过 h5 吧？1px 问题遇到过吧？怎么解决呢？ 灵魂三问！别急，慢慢分析。  什么是 1px 问题？ 一句话总结，就是涉及到 1px 的属性，在某些手机浏览器里，不能正常显示，有时太细甚至不显示；有时太粗，明显宽于 1px。即 1px 这个度量单位失真了。 再延伸一下，这其实是一类失真问题的统称，不止局限于 1px，我们讨论的意义在于，知其原因，晓其方法。  基本概念 ppi dpr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="由1px问题引发的rem方案">
+<meta property="og:url" content="https://dontcallmilanac.github.io/2021/03/15/1px-rem/index.html">
 <meta property="og:site_name" content="M &amp; D">
-<meta property="og:description" content="June &amp; July">
+<meta property="og:description" content="面试官问，写过 h5 吧？1px 问题遇到过吧？怎么解决呢？ 灵魂三问！别急，慢慢分析。  什么是 1px 问题？ 一句话总结，就是涉及到 1px 的属性，在某些手机浏览器里，不能正常显示，有时太细甚至不显示；有时太粗，明显宽于 1px。即 1px 这个度量单位失真了。 再延伸一下，这其实是一类失真问题的统称，不止局限于 1px，我们讨论的意义在于，知其原因，晓其方法。  基本概念 ppi dpr">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2019-08-10T12:44:38.121Z">
-<meta property="article:modified_time" content="2019-08-10T12:44:38.121Z">
+<meta property="og:image" content="https://dontcallmilanac.github.io/img/ppi.png">
+<meta property="article:published_time" content="2021-03-15T10:25:17.000Z">
+<meta property="article:modified_time" content="2021-03-15T10:25:17.000Z">
 <meta property="article:author" content="qibw">
-<meta property="article:tag" content="fe,web">
+<meta property="article:tag" content="css">
+<meta property="article:tag" content="rem">
+<meta property="article:tag" content="h5">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dontcallmilanac.github.io/img/ppi.png">
   
     <link rel="alternate" href="/atom.xml" title="M &amp; D" type="application/atom+xml">
   
@@ -67,12 +71,16 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="about-" class="article article-type-about" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-1px-rem" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/about/index.html" class="article-date">
-  <time datetime="2019-08-10T12:44:38.121Z" itemprop="datePublished">2019-08-10</time>
+    <a href="/2021/03/15/1px-rem/" class="article-date">
+  <time datetime="2021-03-15T10:25:17.000Z" itemprop="datePublished">2021-03-15</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/web/">web</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -81,7 +89,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      About
+      由1px问题引发的rem方案
     </h1>
   
 
@@ -89,17 +97,57 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <h2 id="面试官问，写过-h5-吧？1px-问题遇到过吧？怎么解决呢？"><a href="#面试官问，写过-h5-吧？1px-问题遇到过吧？怎么解决呢？" class="headerlink" title="面试官问，写过 h5 吧？1px 问题遇到过吧？怎么解决呢？"></a>面试官问，写过 h5 吧？1px 问题遇到过吧？怎么解决呢？</h2><ul>
+<li>灵魂三问！别急，慢慢分析。</li>
+</ul>
+<h2 id="什么是-1px-问题？"><a href="#什么是-1px-问题？" class="headerlink" title="什么是 1px 问题？"></a>什么是 1px 问题？</h2><ul>
+<li>一句话总结，就是涉及到 1px 的属性，在某些手机浏览器里，不能正常显示，有时太细甚至不显示；有时太粗，明显宽于 1px。即 1px 这个度量单位失真了。</li>
+<li>再延伸一下，这其实是一类失真问题的统称，不止局限于 1px，我们讨论的意义在于，知其原因，晓其方法。</li>
+</ul>
+<h2 id="基本概念-ppi-dpr"><a href="#基本概念-ppi-dpr" class="headerlink" title="基本概念 ppi dpr"></a>基本概念 ppi dpr</h2><ul>
+<li>深入讨论之前，先看几个概念。ppi、dpr、dip</li>
+<li>ppi：pixels per inch。每英寸对角线上所拥有的像素。计算公式为：<img src="/img/ppi.png" alt="ppi" title="ppi"> 手机屏幕的 ppi 当达到一定数值时，人眼就分辨不出颗粒感。</li>
+<li>dpr：device pixel ratio。设备像素比。有些高清屏幕为了追求高 ppi，增大了设备像素。在原本 1 个格子里加倍了像素，让人眼感觉更加清晰。比如原来是 1x1 的方格，dpr 为 2 时就是 2x2。</li>
+<li>dip：device independent pixel。设备独立像素，是指一种换算机制。由于高清屏幕像素点过多，如果按照原来的像素数显示，由于屏幕实际尺寸不会变的很大（至少不会 2、3 倍的增加），所以会导致图像过小，以至于人眼反而看不清。所以设备自动进行了换算，得出了这个意为与设备无关的像素值，也可用来描述图像相对的大小。</li>
+</ul>
+<h2 id="何时发生？"><a href="#何时发生？" class="headerlink" title="何时发生？"></a>何时发生？</h2><ul>
+<li>我们写的 css 像素，实际上就是换算后的 dip。设备根据不同 dpr，再反推出到底应该渲染多少实际的设备像素。</li>
+<li>当高清屏 dpr 大于 1 时。相当于放大了整个页面，所有单位相当于放大了 dpr 倍。此时写个 1px，如果 dpr 是 2，那么等于设备应该渲染 0.5px 的 dip。</li>
+<li>然而，问题关键来了。有时这个 0.5 会被四舍五入为 1。这样就整整差了 2 倍。所以看起来线条变粗了。</li>
+</ul>
+<h2 id="如何解决"><a href="#如何解决" class="headerlink" title="如何解决"></a>如何解决</h2><h4 id="方案一大类：跳过会出问题的属性，如-border。用其他方案替代"><a href="#方案一大类：跳过会出问题的属性，如-border。用其他方案替代" class="headerlink" title="方案一大类：跳过会出问题的属性，如 border。用其他方案替代"></a>方案一大类：跳过会出问题的属性，如 border。用其他方案替代</h4><ul>
+<li>把 border 颜色设为透明，然后加上 border-image。缺点：有点 low，生生把灵活的 css 变成了硬编码，随便改个啥就得换图。</li>
+<li>box-shadow 模拟 border，四个方向分别写阴影。缺点：不能圆角了，即 border-radius 无法模拟。颜色也不准确，因为有阴影。</li>
+<li>使用伪元素，造个“替身”。先放大 n 倍，再 transform 缩小 1/n。缺点：有些 html 元素不能用伪元素。</li>
+<li>用 svg 整个绘图，画出个 1px。然后作为背景图使用，是上面第一个方法的升级。有个插件 postcss-write-svg，可以将 svg 画好插入 css。</li>
+</ul>
+<h4 id="方案二大类：模拟-0-5px-或-0-33px，使其生效"><a href="#方案二大类：模拟-0-5px-或-0-33px，使其生效" class="headerlink" title="方案二大类：模拟 0.5px 或 0.33px，使其生效"></a>方案二大类：模拟 0.5px 或 0.33px，使其生效</h4><ul>
+<li>WWDC2014 上提到了，直接就用 0.5px，ios8 以上支持小数 px，缺点：安卓不鸟你</li>
+<li>使用 rem。根据 dpr 动态换算 viewport 的缩放比。如为 2 就缩小到 0.5 倍，为 3 就 0.333。由于整个页面已被缩小，故 1px 会正常显示为缩小后的长度。设计师很满意！程序员喘口气！实测，修改后实际是改变了屏幕视口的宽高，即修改了 dip。也有缺点：缩放比太小时，导致缩小后的 1px，小于了 0.5px，有时还是会被四舍五入舍去。可以规避，缩放比别太小即可。</li>
+</ul>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://dontcallmilanac.github.io/about/index.html" data-id="ckm6xtqn40000vuref8w649oz" class="article-share-link">Share</a>
+      <a data-url="https://dontcallmilanac.github.io/2021/03/15/1px-rem/" data-id="ckmafxm5w00004qredsrncgjq" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/css/" rel="tag">css</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/h5/" rel="tag">h5</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/rem/" rel="tag">rem</a></li></ul>
+
     </footer>
   </div>
   
     
+<nav id="article-nav">
+  
+  
+    <a href="/2021/03/13/pubsub-vs-observer/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">pubsub-vs-observer</div>
+    </a>
+  
+</nav>
+
   
 </article>
 
