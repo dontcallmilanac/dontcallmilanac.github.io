@@ -105,7 +105,9 @@
 
 <h2 id="控制-DHCP-服务器"><a href="#控制-DHCP-服务器" class="headerlink" title="控制 DHCP 服务器"></a>控制 DHCP 服务器</h2><pre><code>service dhcpd start          //启动DHCP服务
 service dhcpd stop           //关闭DHCP服务
-service dhcpd restart        //重启DHCP服务</code></pre><h2 id="在指定网络接口上启动-DHCP-服务器"><a href="#在指定网络接口上启动-DHCP-服务器" class="headerlink" title="在指定网络接口上启动 DHCP 服务器"></a>在指定网络接口上启动 DHCP 服务器</h2><p>修改<code>/etc/sysconfig/dhcpd</code>文件:</p>
+service dhcpd restart        //重启DHCP服务
+</code></pre>
+<h2 id="在指定网络接口上启动-DHCP-服务器"><a href="#在指定网络接口上启动-DHCP-服务器" class="headerlink" title="在指定网络接口上启动 DHCP 服务器"></a>在指定网络接口上启动 DHCP 服务器</h2><p>修改<code>/etc/sysconfig/dhcpd</code>文件:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DHCPDAGRS=eth0   //在eth0网卡上启动DHCP</span><br></pre></td></tr></table></figure>
 
 <h2 id="查看-DHCP-客户机地址的租约信息"><a href="#查看-DHCP-客户机地址的租约信息" class="headerlink" title="查看 DHCP 客户机地址的租约信息"></a>查看 DHCP 客户机地址的租约信息</h2><p><code>/var/lib/dhcpd/dhcpd.leases</code>文件中保存了客户机地址的租约信息</p>
@@ -114,7 +116,7 @@ service dhcpd restart        //重启DHCP服务</code></pre><h2 id="在指定网
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://dontcallmilanac.github.io/2015/06/22/make-a-dhcp-server/" data-id="ckm6xtqnm000kvure93qbfi03" class="article-share-link">Share</a>
+      <a data-url="https://dontcallmilanac.github.io/2015/06/22/make-a-dhcp-server/" data-id="ckmau8ydy00186nre2upddjw8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dhcp/" rel="tag">dhcp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/redhat/" rel="tag">redhat</a></li></ul>
